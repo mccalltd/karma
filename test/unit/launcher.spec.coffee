@@ -81,7 +81,7 @@ describe 'launcher', ->
       beforeEach ->
         exitSpy = sinon.spy()
 
-      it 'should kill all running processe', ->
+      it 'should kill all running processes', ->
         l.launch ['Fake', 'Fake'], 'localhost', 1234
         l.kill()
 
@@ -114,6 +114,39 @@ describe 'launcher', ->
         l.kill done
 
 
+    describe 'killBatch', ->
+      exitSpy = null
+
+      beforeEach ->
+        exitSpy = sinon.spy()
+
+      it 'should kill the given browser processes', ->
+        l.launch ['Fake', 'Fake'], 'localhost', 1234
+        l.killBatch [1]
+
+        browser = FakeBrowser._instances[0]
+        expect(browser.kill).to.have.been.called
+
+        browser = FakeBrowser._instances[1]
+        expect(browser.kill).not.to.have.been.called
+
+
+      it 'should call callback when all processes killed', ->
+        l.launch ['Fake', 'Fake'], 'localhost', 1234
+        l.killBatch [1], exitSpy
+
+        expect(exitSpy).not.to.have.been.called
+
+        # finish the first browser
+        browser = FakeBrowser._instances[0]
+        browser.kill.invokeCallback()
+        expect(exitSpy).to.have.been.called
+
+
+      it 'should call callback even if no browsers launched', (done) ->
+        l.kill done
+
+
     describe 'areAllCaptured', ->
 
       it 'should return true if only if all browsers captured', ->
@@ -126,6 +159,22 @@ describe 'launcher', ->
 
         l.markCaptured 2
         expect(l.areAllCaptured()).to.equal  true
+
+
+    describe 'getCapturedCount', ->
+
+      it 'should return the number of captured browsers', ->
+        l.launch ['Fake', 'Fake'], 'localhost', 1234
+
+        expect(l.getCapturedCount()).to.equal 0
+
+        # capture the first browser
+        l.markCaptured 1
+        expect(l.getCapturedCount()).to.equal 1
+
+        # finish the first browser
+        l.markCaptured 2
+        expect(l.getCapturedCount()).to.equal 2
 
 
     describe 'onExit', ->

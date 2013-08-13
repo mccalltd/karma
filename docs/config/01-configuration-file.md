@@ -207,7 +207,7 @@ See [plugins] for more information.
 
 **Description:** A map of preprocessors to use.
 
-Preprocessors can be loaded through [plugins]. 
+Preprocessors can be loaded through [plugins].
 
 Please note just about all preprocessors in Karma (other than CoffeeScript and some other defaults)
 require an additional library to be installed (via NPM).
@@ -276,6 +276,19 @@ Please note just about all additional reporters in Karma (other than progress) r
 
 If `true`, Karma will start and capture all configured browsers, run tests and then exit with an exit code of `0` or `1` depending
 on whether all tests passed or any tests failed.
+
+
+## singleRunBatchSize
+**Type:** Number
+
+**Default:** `0`
+
+**CLI:** `--single-run-batch-size`
+
+**Description:** Run tests in batches in Continuous Integration mode.
+
+If greater than zero, Karma will start all configured browsers and run tests
+in batches of the given size. Karma will exit with an exit code of `0` or `1` depending on whether all batches passed or any batches failed.
 
 
 ## transports

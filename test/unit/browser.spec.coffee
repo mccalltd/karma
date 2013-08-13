@@ -329,9 +329,9 @@ describe 'browser', ->
 
 
     #==========================================================================
-    # browser.Collection.setAllIsReadyTo
+    # browser.Collection.setIsReadyTo
     #==========================================================================
-    describe 'setAllIsReadyTo', ->
+    describe 'setIsReadyTo', ->
       browsers = null
 
       beforeEach ->
@@ -394,6 +394,30 @@ describe 'browser', ->
         nonReady = []
         collection.areAllReady nonReady
         expect(nonReady).to.deep.equal [browsers[0], browsers[1]]
+
+
+    #==========================================================================
+    # browser.Collection.getReadyBrowsers
+    #==========================================================================
+    describe 'getReadyBrowsers', ->
+      browsers = null
+
+      beforeEach ->
+        browsers = [new b.Browser, new b.Browser]
+        browsers.forEach (browser) ->
+          collection.add browser
+
+
+      it 'should return the browsers that are ready', ->
+        browsers[0].isReady = false
+        expect(collection.getReadyBrowsers().length).to.equal  1
+
+
+      it 'should add all non-ready browsers into given array', ->
+        browsers[0].isReady = false
+        nonReady = []
+        collection.getReadyBrowsers nonReady
+        expect(nonReady).to.deep.equal [browsers[0]]
 
 
     #==========================================================================
